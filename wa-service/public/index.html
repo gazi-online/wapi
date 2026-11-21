@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenWA WhatsApp Control Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #25D366; /* WhatsApp Green */
+      --accent-hover: #1eb956;
+      --danger: #ef4444;
+      --primary: #3b82f6;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 680px;
+      width: 100%;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(37, 211, 102, 0.15);
+      color: var(--accent);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(37, 211, 102, 0.3);
+    }
+    .badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+    .btn {
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+      background: var(--accent);
+      color: #000;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .btn:hover {
+      background: var(--accent-hover);
+    }
+    .btn:active {
+      transform: scale(0.99);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .status-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .status-box.success {
+      display: block;
+      background: rgba(37, 211, 102, 0.1);
+      border: 1px solid rgba(37, 211, 102, 0.3);
+      color: #4ade80;
+    }
+    .status-box.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    .status-box pre {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      overflow-x: auto;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.5rem;
+      border-radius: 6px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .info-item {
+      background: #0f172a;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+    .info-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .info-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-top: 2px;
+      word-break: break-all;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">WhatsApp Gateway Active</div>
+      <h1>OpenWA Control Center</h1>
+      <p class="subtitle">Vercel Serverless Frontend & Webhook Hub</p>
+    </header>
+
+    <!-- System Status Card -->
+    <div class="card">
+      <div class="card-title">📡 Service Details</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Connected Phone</div>
+          <div class="info-value">+91 9733671094</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Platform</div>
+          <div class="info-value">Vercel Serverless</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Rate Limit</div>
+          <div class="info-value">Max 5 sends/min</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Webhook Security</div>
+          <div class="info-value">HMAC-SHA256 Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Send Message Card -->
+    <div class="card">
+      <div class="card-title">💬 Send WhatsApp Message</div>
+      <form id="sendForm">
+        <div class="form-group">
+          <label for="phone">Recipient Phone Number (with Country Code)</label>
+          <input type="text" id="phone" placeholder="e.g. 919733671094" required value="919733671094">
+        </div>
+        <div class="form-group">
+          <label for="message">Message Text</label>
+          <textarea id="message" placeholder="Type your WhatsApp message here..." required>Hello from Vercel Frontend!</textarea>
+        </div>
+        <button type="submit" class="btn" id="submitBtn">
+          <span>Send Message Now</span>
+        </button>
+      </form>
+
+      <div id="statusBox" class="status-box"></div>
+    </div>
+
+    <footer>
+      Powered by OpenWA Gateway & Vercel
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById('sendForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusBox = document.getElementById('statusBox');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('phone').value.trim();
+      const text = document.getElementById('message').value.trim();
+
+      if (!phone || !text) return;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>Sending... ⏳</span>';
+      statusBox.className = 'status-box';
+      statusBox.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, text })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          statusBox.className = 'status-box success';
+          statusBox.innerHTML = `<strong>✅ Success!</strong> Message dispatched to WhatsApp.<pre>${JSON.stringify(data.result, null, 2)}</pre>`;
+        } else {
+          statusBox.className = 'status-box error';
+          statusBox.innerHTML = `<strong>❌ Error:</strong> ${data.error || 'Failed to send message.'}`;
+        }
+      } catch (err) {
+        statusBox.className = 'status-box error';
+        statusBox.innerHTML = `<strong>❌ Network Error:</strong> ${err.message}`;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Send Message Now</span>';
+      }
+    });
+  </script>
+</body>
+</html>

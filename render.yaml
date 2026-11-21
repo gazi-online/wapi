@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: openwa
+    env: docker
+    dockerfilePath: Dockerfile
+    plan: standard
+    disk:
+      name: openwa-data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: PORT
+        value: 2785
+      - key: DATABASE_TYPE
+        value: sqlite
+      - key: STORAGE_TYPE
+        value: local
+      - key: AUTO_START_SESSIONS
+        value: "true"
+      - key: SEND_PACING_ENABLED
+        value: "true"
